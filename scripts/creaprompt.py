@@ -9,8 +9,8 @@ from modules import script_callbacks
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 folder_path = os.path.join(script_dir, "../csv/" )
-notactive = "未啟動"
-active = "啟動"
+notactive = "Not Active"
+active = "Active"
 dropdowns = []
 
 def send_text_to_prompt(new_text, old_text, Prefix, sufix):
@@ -35,7 +35,7 @@ def read_random_line_from_csv_files(checkbox_group):
                 lines = file.readlines()
                 if lines:
                     chosen_lines.append(random.choice(lines).strip())
-    concatenated_lines = ",".join(chosen_lines) if chosen_lines else "請選擇一個類別。"
+    concatenated_lines = ",".join(chosen_lines) if chosen_lines else "Please, select a category."
     return concatenated_lines
     
 def read_random_line_from_csv_files_auto(checkbox_group_manu):
@@ -47,7 +47,7 @@ def read_random_line_from_csv_files_auto(checkbox_group_manu):
                 lines = file.readlines()
                 if lines:
                     chosen_lines.append(random.choice(lines).strip())
-    concatenated_lines = ",".join(chosen_lines) if chosen_lines else "請選擇一個類別。"
+    concatenated_lines = ",".join(chosen_lines) if chosen_lines else "Please, select a category."
     return concatenated_lines
    
 def select_random_line_from_collection():
@@ -59,9 +59,9 @@ def select_random_line_from_collection():
             if lines:
                 return readline
             else:
-                return "檔案是空的。"
+                return "The file is empty."
     else:
-        return "指定的檔案不存在或不是文字檔案。"  
+        return "The specified file does not exist or is not a text file."  
 
 def read_random_line_from_csv_file_manual(dropdown_index):
     chosen_lines = []
@@ -93,7 +93,7 @@ def get_config_files():
     
 def load_checkbox_state(selected_file):
     if not selected_file:
-        print("請選擇一個檔案。")
+        print("Please select a file.")
         return
     file_path = os.path.join(folder_path, selected_file + ".config")
     with open(file_path, "r") as file:
@@ -103,7 +103,7 @@ def load_checkbox_state(selected_file):
     
 def save_checkbox_state(checkbox_group, file_name):
                 if not file_name:
-                  print("請輸入檔案名稱。")
+                  print("Please enter a file name.")
                   return gr.update(choices=get_config_files()), gr.update(choices=get_config_files())
                 if not file_name.endswith('.config'):
                   file_name += '.config'
@@ -111,12 +111,12 @@ def save_checkbox_state(checkbox_group, file_name):
                 with open(file_path, "w") as file:
                   for checkbox in checkbox_group:
                     file.write(f"{checkbox}\n")
-                print("複選框狀態已成功儲存。")
+                print("Checkbox state saved successfully.")
                 return gr.update(choices=get_config_files(), value= file_name[:-7]), gr.update(choices=get_config_files()) 
                 
 def save_checkbox_state_manu(checkbox_group_manu, file_name):
                 if not file_name:
-                  print("請輸入檔案名稱。")
+                  print("Please enter a file name.")
                   return gr.update(choices=get_config_files()), gr.update(choices=get_config_files())
                 if not file_name.endswith('.config'):
                   file_name += '.config'
@@ -124,7 +124,7 @@ def save_checkbox_state_manu(checkbox_group_manu, file_name):
                 with open(file_path, "w") as file:
                   for checkbox in checkbox_group_manu:
                     file.write(f"{checkbox}\n")
-                print("複選框狀態已成功儲存。")
+                print("Checkbox state saved successfully.")
                 return gr.update(choices=get_config_files(), value= file_name[:-7]), gr.update(choices=get_config_files())
 
 def uncheck_auto_box(is_collection_enabled, is_enabled, is_manual_enabled):
@@ -145,15 +145,15 @@ def uncheck_auto_manual(is_manual_enabled, is_collection_enabled, is_enabled ):
     
 def handle_dropdown_change(selected_value, dropdown_index):
     concatenated_values = ""
-    if selected_value == "🎲隨機\n":
+    if selected_value == "🎲Random\n":
        i = 0
        for filename in os.listdir(folder_path):
          if filename.endswith(".csv") and i == dropdown_index:
-            selected_value = "🎲隨機: " + filename[3:-4] + "🎲"
+            selected_value = "🎲Random: " + filename[3:-4] + "🎲"
             dropdown_values[dropdown_index] = selected_value
          i += 1
     else:
-        if selected_value == "無\n":
+        if selected_value == "None\n":
            selected_value =""
            dropdown_values[dropdown_index] = selected_value[1:]
         else:
@@ -165,7 +165,7 @@ def handle_dropdown_change(selected_value, dropdown_index):
     return concatenated_values
     
 def none_dropdown_change(selected_value, dropdown_index):
-        return gr.update(value= "無\n")
+        return gr.update(value= "None\n")
         
 def none_dropdown_change_clear():
         selected_value =""
@@ -187,57 +187,57 @@ class CreaPromptScript(scripts.Script):
         
     def ui(self, is_img2img):
         with gr.Group():
-            with gr.Accordion("🎨CreaPrompt : 未啟動",open = False) as acc:
+            with gr.Accordion("🎨CreaPrompt : Not Active",open = False) as acc:
               gr.Markdown("""
                             <center><font size="4">
-                                🧠CreaPrompt，瘋狂提示者的工具箱🧠
+                                🧠CreaPrompt, the toolbox for crazy prompters🧠
                                 </font>
                                 <br>
-                                為了獲得最佳效果，請使用 <a href="https://civitai.com/models/383364?modelVersionId=539661">CreaPrompt_Ultimate </a> 檢查點
+                                For best result, use <a href="https://civitai.com/models/383364?modelVersionId=539661">CreaPrompt_Ultimate </a> Checkpoint
                             </center><br>
                             """)
-              with gr.Accordion("➡️CreaPrompt 集合", open=False):
-                     gr.Markdown("啟用時，只需按下正常的生成按鈕，也適用於批量處理")
+              with gr.Accordion("➡️CreaPrompt collection", open=False):
+                     gr.Markdown("When activated, just press the normal generate button, it also works with batch")
                      with gr.Row():
-                       is_collection_enabled = grc.Checkbox(label="♻️啟用自動提示", info="💬來自 CreaPrompt 集合", value=False)
-                       is_randomize_manu = grc.Checkbox(label="🎲啟用隨機提示", info="💬對於批次中的每個圖片", value=False, interactive=True)
-              with gr.Accordion("➡️從類別自動提示", open=True):
-                with gr.Tab("✨隨機"):
+                       is_collection_enabled = grc.Checkbox(label="♻️Enable auto prompting", info="💬From CreaPrompt collection", value=False)
+                       is_randomize_manu = grc.Checkbox(label="🎲Enable random prompts", info="💬For each images in batch", value=False, interactive=True)
+              with gr.Accordion("➡️Auto prompting from categories", open=True):
+                with gr.Tab("✨Random"):
                      with gr.Column(scale=3):
-                       gr.Markdown("啟用時，選擇類別並按下正常的生成按鈕，也適用於批量處理")
+                       gr.Markdown("When activated, select categories and press the normal generate button, it also works with batch")
                      with gr.Row():
-                       is_enabled = grc.Checkbox(label="♻️啟用自動提示", info="💬從選定的類別", value=False)
-                       is_randomize = grc.Checkbox(label="🎲啟用隨機提示", info="💬對於批次中的每個圖片", value=False, interactive=True)  
+                       is_enabled = grc.Checkbox(label="♻️Enable auto prompting", info="💬From selected categories", value=False)
+                       is_randomize = grc.Checkbox(label="🎲Enable random prompts", info="💬For each images in batch", value=False, interactive=True)  
                      with gr.Row():
                        gr.Markdown("# ")
                      with gr.Column(scale=3):
-                       prefix_auto = grc.Textbox(label="提示的前綴：", elem_id="auto_prompt_prefix", show_label=True, lines=2, placeholder="輸入你的前綴或留空如果你不需要", container=True)
-                       sufix_auto = grc.Textbox(label="提示的後綴：", elem_id="auto_prompt_sufix", show_label=True, lines=2, placeholder="輸入你的後綴或留空如果你不需要", container=True)
+                       prefix_auto = grc.Textbox(label="Prefix of the Prompt:", elem_id="auto_prompt_prefix", show_label=True, lines=2, placeholder="Type your prefix or leave blank if you don't want it", container=True)
+                       sufix_auto = grc.Textbox(label="Suffix of the Prompt:", elem_id="auto_prompt_sufix", show_label=True, lines=2, placeholder="Type your suffix or leave blank if you don't want it", container=True)
                      with gr.Row():        
                        gr.Markdown("# ")
                      with gr.Column():
                        gr.Markdown("#")
-                       checkbox_group = grc.CheckboxGroup(label="選擇類別：", choices=checkboxes, default=['base'], min_width=50)
+                       checkbox_group = grc.CheckboxGroup(label="Select Categories:", choices=checkboxes, default=['base'], min_width=50)
                      with gr.Row():
                        gr.Markdown("#")    
                      with gr.Row():                      
-                       save_state_button = gr.Button("儲存你的預設類別", elem_id="save_state", variant="primary")
-                       file_name_textbox = grc.Textbox(elem_id="file_name", show_label=False, placeholder="輸入你的預設名稱", container=True)
-                       file_dropdown_component = gr.Dropdown(show_label=False, choices=get_config_files(), elem_id="file_dropdown", value="選擇一個預設")
-                with gr.Tab("✨手動"):
+                       save_state_button = gr.Button("Save your preset categories", elem_id="save_state", variant="primary")
+                       file_name_textbox = grc.Textbox(elem_id="file_name", show_label=False, placeholder="Enter your preset name", container=True)
+                       file_dropdown_component = gr.Dropdown(show_label=False, choices=get_config_files(), elem_id="file_dropdown", value="Select a preset")
+                with gr.Tab("✨Manual"):
                     with gr.Row():
-                      gr.Markdown("啟用時，從選單中選擇你想要的選項，然後按下正常的生成按鈕，也適用於批量處理")
+                      gr.Markdown("When activated, select what you want from the menus and press normal generate button, it also works with batch")
                     with gr.Row():
-                      is_manual_enabled = grc.Checkbox(label="♻️啟用自動提示", info="💬從下拉選單中選擇", value=False)
-                      is_manual_random = grc.Checkbox(label="🎲啟用隨機提示", info="💬對於批次中的每個圖片", value=False, interactive=True)
+                      is_manual_enabled = grc.Checkbox(label="♻️Enable auto prompting", info="💬From dropdown selection", value=False)
+                      is_manual_random = grc.Checkbox(label="🎲Enable random prompts", info="💬For each images in batch", value=False, interactive=True)
                     with gr.Row():
                       gr.Markdown("# ")
                     with gr.Column(scale=3):
-                      prefix_manual = grc.Textbox(label="提示的前綴：", elem_id="manual_prompt_prefix", show_label=True, lines=2, placeholder="輸入你的前綴或留空如果你不需要", container=True)
-                      sufix_manual = grc.Textbox(label="提示的後綴：", elem_id="manual_prompt_sufix", show_label=True, lines=2, placeholder="輸入你的後綴或留空如果你不需要", container=True)
-                      auto_final = grc.Textbox(label="提示預覽：", elem_id="manual_prompt_result", show_label=True, lines=2, placeholder="將使用的提示", interactive=False, container=True)
+                      prefix_manual = grc.Textbox(label="Prefix of the Prompt:", elem_id="manual_prompt_prefix", show_label=True, lines=2, placeholder="Type your prefix or leave blank if you don't want it", container=True)
+                      sufix_manual = grc.Textbox(label="Suffix of the Prompt:", elem_id="manual_prompt_sufix", show_label=True, lines=2, placeholder="Type your suffix or leave blank if you don't want it", container=True)
+                      auto_final = grc.Textbox(label="Prompt preview:", elem_id="manual_prompt_result", show_label=True, lines=2, placeholder="The prompt that will be used", interactive=False, container=True)
                       gr.Markdown("# ")
-                      all_none_button = gr.Button("將所有類別設為無並清空提示列表，這可能需要幾秒鐘", elem_id="all_none", variant="primary")
+                      all_none_button = gr.Button("Put all categories to None and Clear prompt list, it may take a few seconds", elem_id="all_none", variant="primary")
                     with gr.Row():
                       gr.Markdown("# ")
                     with gr.Row():
@@ -250,36 +250,36 @@ class CreaPromptScript(scripts.Script):
                            with open(file_path, 'r', encoding='utf-8') as file:
                               lines = file.readlines()
                            lines = ["➡️" + line.strip() for line in lines]
-                           lines.insert(0, "無\n")
-                           lines.insert(1, "🎲隨機\n")
-                           dropdown_component = grc.Dropdown(label=f"{filename[3:-4]}", choices=lines, elem_id=f"{filename}_dropdown", container=True, value="無")
+                           lines.insert(0, "None\n")
+                           lines.insert(1, "🎲Random\n")
+                           dropdown_component = grc.Dropdown(label=f"{filename[3:-4]}", choices=lines, elem_id=f"{filename}_dropdown", container=True, value="None")
                            dropdowns.append(dropdown_component)
                     global dropdown_values
                     dropdown_values = [""] * len(dropdowns) 
-              with gr.Accordion("➡️從類別手動創建提示", open=False):         
+              with gr.Accordion("➡️Create prompt manually from categories", open=False):         
                      with gr.Column(scale=3):
-                       gr.Markdown("💬按下正常的生成按鈕以使用最終提示生成圖像")
-                       final = grc.Textbox(label="將用於生成圖像的最終提示：", elem_id="creaprompt_prompt_final", show_label=True, lines=2, placeholder="最終提示顯示在這裡", container=True)
-                       Prefix = grc.Textbox(label="提示的前綴：", elem_id="prompt_prefix", show_label=True, lines=2, placeholder="輸入你的前綴或留空如果你不需要", container=True)
-                       sufix = grc.Textbox(label="提示的後綴：", elem_id="prompt_sufix", show_label=True, lines=2, placeholder="輸入你的後綴或留空如果你不需要", container=True)
-                       prompt = grc.Textbox(label="從類別創建的提示：", elem_id="promptgen_prompt", show_label=True, lines=2, placeholder="選擇你的選項並按下生成按鈕", container=True)
+                       gr.Markdown("💬Press the normal generate button to start generating image with the final prompt")
+                       final = grc.Textbox(label="Final prompt which will be used to generate the image:", elem_id="creaprompt_prompt_final", show_label=True, lines=2, placeholder="The final prompt is displayed here", container=True)
+                       Prefix = grc.Textbox(label="Prefix of the Prompt:", elem_id="prompt_prefix", show_label=True, lines=2, placeholder="Type your prefix or leave blank if you don't want it", container=True)
+                       sufix = grc.Textbox(label="Suffix of the Prompt:", elem_id="prompt_sufix", show_label=True, lines=2, placeholder="Type your suffix or leave blank if you don't want it", container=True)
+                       prompt = grc.Textbox(label="Created Prompt from categories:", elem_id="promptgen_prompt", show_label=True, lines=2, placeholder="Make the selection of your choice and Click Generate button", container=True)
                        gr.Markdown("# ")
-                       checkbox_group_manu = grc.CheckboxGroup(label="選擇類別：", choices=checkboxes, default=['base'], min_width=50)
+                       checkbox_group_manu = grc.CheckboxGroup(label="Select Categories:", choices=checkboxes, default=['base'], min_width=50)
                        gr.Markdown("# ")
                        with gr.Row():
-                            save_state_button_manu = gr.Button("儲存你的預設類別", elem_id="save_state_manu", variant="primary")
-                            file_name_textbox_manu = grc.Textbox(elem_id="file_name_manu", show_label=False, placeholder="輸入你的預設名稱", container=True)
-                            file_dropdown_component_manu = gr.Dropdown(show_label=False, choices=get_config_files(), elem_id="file_dropdown_manu", value="選擇一個預設")
+                            save_state_button_manu = gr.Button("Save your preset categories", elem_id="save_state_manu", variant="primary")
+                            file_name_textbox_manu = grc.Textbox(elem_id="file_name_manu", show_label=False, placeholder="Enter your preset name", container=True)
+                            file_dropdown_component_manu = gr.Dropdown(show_label=False, choices=get_config_files(), elem_id="file_dropdown_manu", value="Select a preset")
                        with gr.Row():
                             gr.Markdown("# ")
                        with gr.Row():
-                            Sendbefore = gr.Button('在最終提示前添加', elem_id="promptgen_sendto_img", variant='primary')
-                            send_text_button = gr.Button(value='替換最終提示', variant='primary')
-                            Sendafter = gr.Button('在最終提示後添加', elem_id="promptgen_sendto_txt", variant='primary')                            
+                            Sendbefore = gr.Button('Add before final prompt', elem_id="promptgen_sendto_img", variant='primary')
+                            send_text_button = gr.Button(value='Replace final prompt', variant='primary')
+                            Sendafter = gr.Button('Add after final prompt', elem_id="promptgen_sendto_txt", variant='primary')                            
                        with gr.Column(scale=1):
                             gr.Markdown("#")
                             with gr.Row():
-                                submit = gr.Button('從類別創建提示', elem_id="promptgen_generate", variant='primary')
+                                submit = gr.Button('Create prompt from categories', elem_id="promptgen_generate", variant='primary')
                             with gr.Row():
                                 gr.Markdown("# ")
                                     
@@ -289,9 +289,9 @@ class CreaPromptScript(scripts.Script):
                 all_none_button.click(none_dropdown_change, inputs=[dropdowns[i]], outputs=[dropdowns[i]])
 
             all_none_button.click(none_dropdown_change_clear, outputs=[auto_final])
-            is_enabled.select(fn=lambda x:gr.update(label = f"🎨CreaPrompt : {'啟動' if x else '未啟動'}"),inputs=is_enabled, outputs=[acc])
-            is_collection_enabled.select(fn=lambda x:gr.update(label = f"🎨CreaPrompt : {'啟動' if x else '未啟動'}"),inputs=is_collection_enabled, outputs=[acc])
-            is_manual_enabled.select(fn=lambda x:gr.update(label = f"🎨CreaPrompt : {'啟動' if x else '未啟動'}"),inputs=is_manual_enabled, outputs=[acc])
+            is_enabled.select(fn=lambda x:gr.update(label = f"🎨CreaPrompt : {'Active' if x else 'Not Active'}"),inputs=is_enabled, outputs=[acc])
+            is_collection_enabled.select(fn=lambda x:gr.update(label = f"🎨CreaPrompt : {'Active' if x else 'Not Active'}"),inputs=is_collection_enabled, outputs=[acc])
+            is_manual_enabled.select(fn=lambda x:gr.update(label = f"🎨CreaPrompt : {'Active' if x else 'Not Active'}"),inputs=is_manual_enabled, outputs=[acc])
             save_state_button_manu.click(save_checkbox_state_manu, inputs= [checkbox_group_manu, file_name_textbox_manu], outputs=[file_dropdown_component_manu, file_dropdown_component])
             save_state_button.click(save_checkbox_state, inputs= [checkbox_group, file_name_textbox], outputs=[file_dropdown_component, file_dropdown_component_manu])                        
             file_dropdown_component.change(load_checkbox_state, inputs=[file_dropdown_component], outputs=[checkbox_group])
@@ -348,8 +348,8 @@ class CreaPromptScript(scripts.Script):
                     if value[0] == "🎲":
                        back_dropdown_values[i] = read_random_line_from_csv_file_manual(i)
               if not values_exist:  
-                 p.all_prompts[0] = "請選擇類別"              
-                 print("請選擇類別")   
+                 p.all_prompts[0] = "Please select categories"              
+                 print("Please select categories")   
               else:                 
                  for value in back_dropdown_values:
                     if value:
@@ -359,8 +359,8 @@ class CreaPromptScript(scripts.Script):
                  if sufix_manual:
                     concatenated_values = concatenated_values + sufix_manual                      
                  concatenated_values = concatenated_values.rstrip(", ")
-                 print("從類別中手動使用的提示：" + " " + concatenated_values)
-                 p.extra_generation_params.update({"CreaPrompt":"從類別中手動"})
+                 print("Prompt used for manual from categories:" + " " + concatenated_values)
+                 p.extra_generation_params.update({"CreaPrompt":"manual from categories"})
                  p.all_prompts[0] = concatenated_values
                  p.all_hr_prompts = p.all_prompts[0]
            if(batchCount > 1):   
@@ -375,9 +375,9 @@ class CreaPromptScript(scripts.Script):
                            if value[0] == "🎲":
                               back_dropdown_values[a] = read_random_line_from_csv_file_manual(a)
                      if not values_exist:  
-                        p.all_prompts[i] = "請選擇類別"  
+                        p.all_prompts[i] = "Please select categories"  
                         if i == 0:                        
-                           print("請選擇類別")   
+                           print("Please select categories")   
                      else:                 
                         for value in back_dropdown_values:
                            if value:
@@ -387,8 +387,8 @@ class CreaPromptScript(scripts.Script):
                         if sufix_manual:
                            concatenated_values = concatenated_values + sufix_manual      
                         concatenated_values = concatenated_values.rstrip(", ")
-                        print("從類別中手動使用的提示：" + " " + concatenated_values)
-                        p.extra_generation_params.update({"CreaPrompt":"從類別中手動"})
+                        print("Prompt used for manual from categories:" + " " + concatenated_values)
+                        p.extra_generation_params.update({"CreaPrompt":"manual from categories"})
                         p.all_prompts[i] = concatenated_values
                         p.all_hr_prompts = p.all_prompts[i]
                   else:
@@ -402,8 +402,8 @@ class CreaPromptScript(scripts.Script):
                            if value[0] == "🎲":
                               back_dropdown_values[a] = read_random_line_from_csv_file_manual(a)
                      if not values_exist:  
-                        concatenated_values = "請選擇類別"
-                        print("請選擇類別")   
+                        concatenated_values = "Please select categories"
+                        print("Please select categories")   
                      else:                 
                         for value in back_dropdown_values:
                            if value:
@@ -413,8 +413,8 @@ class CreaPromptScript(scripts.Script):
                         if sufix_manual:
                            concatenated_values = concatenated_values + sufix_manual
                         concatenated_values = concatenated_values.rstrip(", ")
-                        print("從類別中手動使用的提示：" + " " + concatenated_values)
-                   p.extra_generation_params.update({"CreaPrompt":"從類別中手動"})
+                        print("Prompt used for manual from categories:" + " " + concatenated_values)
+                   p.extra_generation_params.update({"CreaPrompt":"manual from categories"})
                    p.all_prompts[i] = concatenated_values
                    p.all_hr_prompts = p.all_prompts[i]
         if is_collection_enabled:
@@ -423,8 +423,8 @@ class CreaPromptScript(scripts.Script):
                   randprompt=select_random_line_from_collection()  
               p.all_prompts[i] = randprompt
               p.all_hr_prompts = p.all_prompts[i]
-              print("從集合中使用的提示：" + " " + randprompt)    
-              p.extra_generation_params.update({"CreaPrompt":"集合"})              
+              print("Prompt used from collection:" + " " + randprompt)    
+              p.extra_generation_params.update({"CreaPrompt":"Collection"})              
            if(batchCount > 1):
             randprompts = {}
             randprompt = ""
@@ -434,14 +434,14 @@ class CreaPromptScript(scripts.Script):
                    randprompts[i] = randprompt
                    p.all_prompts[i] = randprompts[i]
                    p.all_hr_prompts = p.all_prompts[i]
-                   print("從集合中使用的提示：" + " " + randprompts[i])
+                   print("Prompt used from collection:" + " " + randprompts[i])
                 else:
                     if i == 0:
                       randprompt = select_random_line_from_collection()
-                      print("從集合中使用的提示：" + " " + randprompt)
+                      print("Prompt used from collection:" + " " + randprompt)
                 p.all_prompts[i] = randprompt
                 p.all_hr_prompts = p.all_prompts[i]                
-                p.extra_generation_params.update({"CreaPrompt":"集合"})                
+                p.extra_generation_params.update({"CreaPrompt":"Collection"})                
     
         if not is_enabled:
            return
@@ -452,11 +452,11 @@ class CreaPromptScript(scripts.Script):
                 if prefix_auto:
                    randprompt = prefix_auto + "," + randprompt
                 if sufix_auto:
-                   randprompt = randprompt + "," + randprompt
+                   randprompt = randprompt + "," + sufix_auto
             p.all_prompts[i] = randprompt
             p.all_hr_prompts = p.all_prompts[i]
-            print("從類別中隨機使用的提示：" + " " + randprompt)
-            p.extra_generation_params.update({"CreaPrompt 隨機從類別":", ".join([str(x) for x in checkbox_group])})
+            print("Prompt used for random from categories:" + " " + randprompt)
+            p.extra_generation_params.update({"CreaPrompt random From categories":", ".join([str(x) for x in checkbox_group])})
             
         if(batchCount > 1):
             randprompts = {}
@@ -471,21 +471,29 @@ class CreaPromptScript(scripts.Script):
                    randprompts[i] = randprompt
                    p.all_prompts[i] = randprompts[i]
                    p.all_hr_prompts = p.all_prompts[i]
-                   print("從類別中隨機使用的提示：" + " " + randprompts[i])
+                   print("Prompt used for random from categories:" + " " + randprompts[i])
                 else:
                     if i == 0:
                       randprompt = read_random_line_from_csv_files(checkbox_group)
                       if prefix_auto:
                          randprompt = prefix_auto + "," + randprompt
                       if sufix_auto:
-                         randprompt = randprompt + "," + randprompt
-                      print("從類別中隨機使用的提示：" + " " + randprompt)
+                         randprompt = randprompt + "," + sufix_auto
+                      print("Prompt used for random from categories:" + " " + randprompt)
                 p.all_prompts[i] = randprompt
                 p.all_hr_prompts = p.all_prompts[i]
-                p.extra_generation_params.update({"CreaPrompt 隨機從類別":", ".join([str(x) for x in checkbox_group])})
+                p.extra_generation_params.update({"CreaPrompt random From categories":", ".join([str(x) for x in checkbox_group])})
 
     def after_component(self, component, **kwargs):
         if kwargs.get("elem_id") == "txt2img_prompt":
             self.boxx = component
         if kwargs.get("elem_id") == "img2img_prompt":
             self.boxxIMG = component
+           
+
+
+
+
+
+
+
