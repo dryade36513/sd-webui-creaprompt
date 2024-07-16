@@ -247,7 +247,7 @@ class CreaPromptScript(scripts.Script):
                         if filename.endswith(".csv"):
                            file_path = os.path.join(folder_path, filename)
                            lines = []
-                           with open(file_path, 'r', encoding='utf-8') as file:
+                           with open(file_path, 'r', encoding='latin-1') as file:
                               lines = file.readlines()
                            lines = ["➡️" + line.strip() for line in lines]
                            lines.insert(0, "None\n")
